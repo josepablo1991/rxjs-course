@@ -26,6 +26,8 @@ export class HomeComponent implements OnInit {
 
     ngOnInit() {
 
+        // The only prblem with this example is that we are making 2 http requests
+
         // this is an  imperative design 
         const http$ = createHttpObservable('/api/courses');
 
