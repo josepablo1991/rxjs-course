@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {Course} from "../model/course";
 import {interval, Observable, of, timer,pipe} from 'rxjs';
-import {catchError, delayWhen, map, retryWhen, shareReplay, tap} from 'rxjs/operators';
+import {catchError, delayWhen, map, retryWhen, share, shareReplay, tap} from 'rxjs/operators';
 import { createHttpObservable } from '../common/util';
 //import { ConsoleReporter } from 'jasmine';
 
@@ -32,13 +32,18 @@ export class HomeComponent implements OnInit {
         const http$ = createHttpObservable('/api/courses');
 
         // specify the type of Obsevable 
+        // with shareReplay we can make the result of the firstStream of the observable to be 
+        // copied and then replayed to anyone that subscribes to this Observable
         const courses$: Observable<Course[]> = http$
         .pipe(
-            map( res => Object.values(res["payload"]))
+            tap(() => console.log("HTTP request executed")),
+            map( res => Object.values(res["payload"])),
+            shareReplay()
         );
 
         // every subscription generates a request since the  courses$ is just a 
         // definition of the observable and not a method() that instanciates a stream
+
         courses$.subscribe()
 
         this.beginnersCourses$ = courses$
