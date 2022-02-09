@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {Course} from "../model/course";
-import {interval, Observable, of, timer} from 'rxjs';
+import {interval, Observable, of, timer,pipe} from 'rxjs';
 import {catchError, delayWhen, map, retryWhen, shareReplay, tap} from 'rxjs/operators';
 import { createHttpObservable } from '../common/util';
 //import { ConsoleReporter } from 'jasmine';
@@ -13,8 +13,11 @@ import { createHttpObservable } from '../common/util';
 })
 export class HomeComponent implements OnInit {
 
-    beginnersCourses: Course[];
-    advancedCourses: Course[];
+    // these elements are not data variables up for mutation 
+    // They are definition of data streams
+    beginnersCourses$: Observable<Course[]>;
+
+    advancedCourses$: Observable<Course[]>;
 
 
     constructor() {
@@ -23,28 +26,26 @@ export class HomeComponent implements OnInit {
 
     ngOnInit() {
 
-        
-        const http$ = createHttpObservable('/api/courses')
+        // this is an  imperative design 
+        const http$ = createHttpObservable('/api/courses');
 
-        const courses$ = http$.pipe(
-            map( httpResponse => Object.values(httpResponse["payload"]) )
+        // specify the type of Obsevable 
+        const courses$: Observable<Course[]> = http$
+        .pipe(
+            map( res => Object.values(res["payload"]))
         );
 
-        courses$.subscribe(
-        //next level
-        courses => {
-            this.beginnersCourses = courses.filter(course => course.category == 'BEGINNER' )
-            this.advancedCourses = courses.filter(course => course.category == 'ADVANCED')
+        this.beginnersCourses$ = courses$
+        .pipe(
+            map(courses => courses
+                .filter(course => course.category == 'BEGINNER' ))
+        );
 
-            console.log( this.advancedCourses);
-            
-        },
-        // error level alterbative we can pass the  "noop" which stands for no operation
-        () => {},
-        // completed level
-        () => console.log('completed')
-        // this way we honor the Observable contract agreement
-        )
+        this.advancedCourses$ = courses$
+        .pipe(
+            map(courses => courses
+                .filter(course => course.category == 'ADVANCED' ))
+        );
 
     }
 

@@ -16,25 +16,6 @@ export class AboutComponent implements OnInit {
   ngOnInit() {
 
 
-    const http$ = createHttpObservable('/api/courses')
-
-    const courses = http$.pipe(
-      map( httpResponse => Object.values(httpResponse['payload']) )
-    );
-
-    http$.subscribe(
-      //next level
-      courses => console.log(courses),
-      // error level alterbative we can pass the  "noop" which stands for no operation
-      () => {},
-      // completed level
-      () => console.log('completed')
-      // this way we honor the Observable contract agreement
-    )
-
-
-
-
 
 
 
