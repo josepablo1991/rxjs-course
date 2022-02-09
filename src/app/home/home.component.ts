@@ -37,6 +37,10 @@ export class HomeComponent implements OnInit {
             map( res => Object.values(res["payload"]))
         );
 
+        // every subscription generates a request since the  courses$ is just a 
+        // definition of the observable and not a method() that instanciates a stream
+        courses$.subscribe()
+
         this.beginnersCourses$ = courses$
         .pipe(
             map(courses => courses
