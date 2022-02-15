@@ -53,9 +53,17 @@ export class CourseComponent implements OnInit, AfterViewInit {
     }
 
     ngAfterViewInit() {
-
-
-
+        
+        // get values from the output stream
+        // to avoid many requests and make stable observable values we use debounceTime 
+        // to avoid requesting on duplicates we use distinctUntilChange
+        fromEvent<any>(this.input.nativeElement,'keyup')
+            .pipe(
+                map(event => event.target.value),
+                debounceTime(400),
+                distinctUntilChanged()
+            )
+            .subscribe(console.log);
 
     }
 
