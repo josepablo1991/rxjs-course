@@ -63,6 +63,13 @@ export class CourseDialogComponent implements OnInit, AfterViewInit {
 
     ngAfterViewInit() {
 
+        //exahust map is very usefull for when using on submission buttons that can be clicked many times
+        //https://rxjs.dev/api/operators/exhaustMap
+        fromEvent(this.saveButton.nativeElement, 'click')
+            .pipe(
+                exhaustMap(()=> this.saveCourse(this.form.value))
+            )
+            .subscribe();
 
     }
 
