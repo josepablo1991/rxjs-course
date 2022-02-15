@@ -39,6 +39,8 @@ export class CourseDialogComponent implements OnInit, AfterViewInit {
 
     ngOnInit() {
 
+        this.form.valueChanges.subscribe(console.log);
+
 
 
     }
