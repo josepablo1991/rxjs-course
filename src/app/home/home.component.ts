@@ -49,7 +49,7 @@ export class HomeComponent implements OnInit {
         this.beginnersCourses$ = courses$
         .pipe(
             map(courses => courses
-                .filter(course => course.category == 'BEGINNER' ))
+                .filter(course => course.category == 'INTERMEDIATE' ))
         );
 
         this.advancedCourses$ = courses$

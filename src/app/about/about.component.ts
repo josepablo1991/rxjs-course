@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { response } from 'express';
 import { concat, fromEvent, interval, merge, Observable, of, timer } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, subscribeOn } from 'rxjs/operators';
 import { createHttpObservable } from '../common/util';
 
 @Component({
@@ -85,13 +85,31 @@ export class AboutComponent implements OnInit {
     // Using the merge Observable 
     // ideal for long running operations in paralel 
 
-    const interval1$ = interval(1000);
+    // const interval1$ = interval(1000);
 
-    const interval2$ = interval1$.pipe(map(val => val * 10));
+    // const interval2$ = interval1$.pipe(map(val => val * 10));
 
-    const result$ = merge(interval1$, interval2$);
+    // const result$ = merge(interval1$, interval2$);
 
-    result$.subscribe(console.log);
+    // result$.subscribe(console.log);
+    
+    //  const interval1$ = interval(1000);
+
+    //  const sub = interval1$.subscribe(console.log);
+    //   // with this we can unsubscribe 
+    //  setTimeout(()=> sub.unsubscribe(),5000);
+
+    const http$ = createHttpObservable('/api/courses');
+
+    const sub = http$.subscribe(console.log);
+
+    // here we add a time of 0 because this means that the 
+    // request passes through but the 
+    setTimeout(()=>{
+      sub.unsubscribe()
+    },0)
+    
+     
     
 
 

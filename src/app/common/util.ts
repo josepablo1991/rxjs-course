@@ -3,11 +3,15 @@ import { Observable } from "rxjs";
 
 export function createHttpObservable(url: string): any{
     // the crete method takes in a function 
-    const http$ = Observable.create(observer => {
+    return Observable.create(observer => {
     // observer.next() || observer.error() || observer.complete()
 
+    // implementing cancelation on our custom Observable
+    const controller = new AbortController();
+    const signal = controller.signal;
+
     // We start with a method that returns a Promise
-    fetch(url)
+    fetch(url, {signal})
       .then(response => {
         
         return response.json()
@@ -23,8 +27,8 @@ export function createHttpObservable(url: string): any{
       .catch(err => {
         observer.error(err);
       });
+
+      return () => controller.abort()
+
   });
-
-  return http$
-
 }
