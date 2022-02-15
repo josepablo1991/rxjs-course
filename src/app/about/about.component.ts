@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { response } from 'express';
-import { concat, fromEvent, interval, Observable, of, timer } from 'rxjs';
+import { concat, fromEvent, interval, merge, Observable, of, timer } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { createHttpObservable } from '../common/util';
 
@@ -67,20 +67,32 @@ export class AboutComponent implements OnInit {
 
 
     // Introducing Observable concatenation 
-    // The of() helps us defining different types of observables
+    // // The of() helps us defining different types of observables
 
-    const source1$ = of(1,2,3);
-    const source2$ = of(4,5,6);
-    const source3$ = of(7,8,9);
+    // const source1$ = of(1,2,3);
+    // const source2$ = of(4,5,6);
+    // const source3$ = of(7,8,9);
 
-    // by using the concat function we merge observables in a logical order 
-    // since nothing is subscribed yet then the observables wont activate 
-    const result$ = concat(source1$,source2$,source3$)
+    // // by using the concat function we merge observables in a logical order 
+    // // since nothing is subscribed yet then the observables wont activate 
+    // const result$ = concat(source1$,source2$,source3$)
 
-    // here we subscribe to the function and then ir fires
-    result$.subscribe(val => {
-      console.log(val);
-    })
+    // // here we subscribe to the function and then ir fires
+    // result$.subscribe(val => {
+    //   console.log(val);
+    // })
+
+    // Using the merge Observable 
+    // ideal for long running operations in paralel 
+
+    const interval1$ = interval(1000);
+
+    const interval2$ = interval1$.pipe(map(val => val * 10));
+
+    const result$ = merge(interval1$, interval2$);
+
+    result$.subscribe(console.log);
+    
 
 
   }
